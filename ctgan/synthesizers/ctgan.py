@@ -327,13 +327,15 @@ class CTGAN(BaseSynthesizer):
 
         data_dim = self._transformer.output_dimensions
 
-        self._generator = Generator(
-            self._embedding_dim + self._data_sampler.dim_cond_vec(), self._generator_dim, data_dim
-        ).to(self._device)
+        if self._generator is None:
+            self._generator = Generator(
+                self._embedding_dim + self._data_sampler.dim_cond_vec(), self._generator_dim, data_dim
+            ).to(self._device)
 
-        self._discriminator = Discriminator(
-            data_dim + self._data_sampler.dim_cond_vec(), self._discriminator_dim, pac=self.pac
-        ).to(self._device)
+        if self._discriminator is None:
+            self._discriminator = Discriminator(
+                data_dim + self._data_sampler.dim_cond_vec(), self._discriminator_dim, pac=self.pac
+            ).to(self._device)
 
         optimizerG = optim.Adam(
             self._generator.parameters(),
